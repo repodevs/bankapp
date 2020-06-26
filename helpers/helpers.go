@@ -1,6 +1,9 @@
 package helpers
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
+)
 
 // HandleErr used for handling error
 func HandleErr(err error) {
@@ -15,4 +18,11 @@ func HashAndSalt(pass []byte) string {
 	HandleErr(err)
 
 	return string(hashed)
+}
+
+// ConnectDB used for connection to DB
+func ConnectDB() *gorm.DB {
+	db, err := gorm.Open("postgres", "postgres://postgres:123456@localhost:5432/go_bankapp?sslmode=disable")
+	HandleErr(err)
+	return db
 }

@@ -1,8 +1,13 @@
 package main
 
-import "github.com/repodevs/bankapp/migrations"
+import (
+	"github.com/repodevs/bankapp/api"
+
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+)
 
 
 func main() {
-	migrations.Migrate()
+	// migrations.Migrate()
+	api.StartAPI()
 }
