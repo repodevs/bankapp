@@ -36,6 +36,16 @@ func register(w http.ResponseWriter, r *http.Request) {
 	apiResponse(register, w)
 }
 
+// getUser get user from DB by ID
+func getUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userID := vars["id"]
+	auth := r.Header.Get("Authorization")
+
+	user := users.GetUser(userID, auth)
+	apiResponse(user, w)
+}
+
 // readBody from http.Request
 func readBody(r *http.Request) []byte {
 	body, err := ioutil.ReadAll(r.Body)
@@ -58,8 +68,10 @@ func apiResponse(call map[string]interface{}, w http.ResponseWriter) {
 // StartAPI used for starting API using mux
 func StartAPI() {
 	router := mux.NewRouter()
+	router.Use(helpers.PanicHandler)
 	router.HandleFunc("/login", login).Methods("POST")
 	router.HandleFunc("/register", register).Methods("POST")
+	router.HandleFunc("/user/{id}", getUser).Methods("GET")
 	fmt.Println("Starting API on port :8888")
 	log.Fatal(http.ListenAndServe(":8888", router))
 }
