@@ -19,6 +19,14 @@ type Account struct {
 	UserID  uint
 }
 
+// Transaction struct for transations
+type Transaction struct {
+	gorm.Model
+	From 		uint
+	To 			uint
+	Amount 	int
+}
+
 // ResponseAccount used for struct Response from DB
 type ResponseAccount struct {
 	ID      uint
@@ -51,6 +59,14 @@ type Register struct {
 	Username string
 	Email    string
 	Password string
+}
+
+// TransactionBody struct for transaction
+type TransactionBody struct {
+	UserID uint
+	From uint
+	To uint
+	Amount int
 }
 
 // ErrResponse for

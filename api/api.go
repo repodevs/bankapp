@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/repodevs/bankapp/helpers"
 	"github.com/repodevs/bankapp/interfaces"
+	"github.com/repodevs/bankapp/useraccounts"
 	"github.com/repodevs/bankapp/users"
 )
 
@@ -36,6 +37,18 @@ func register(w http.ResponseWriter, r *http.Request) {
 	apiResponse(register, w)
 }
 
+func transaction(w http.ResponseWriter, r *http.Request) {
+	body := readBody(r)
+	auth := r.Header.Get("Authorization")
+
+	var t interfaces.TransactionBody
+	err := json.Unmarshal(body, &t)
+	helpers.HandleErr(err)
+
+	transaction := useraccounts.Transaction(t.UserID, t.From, t.To, t.Amount, auth)
+	apiResponse(transaction, w)
+}
+
 // getUser get user from DB by ID
 func getUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -59,8 +72,7 @@ func apiResponse(call map[string]interface{}, w http.ResponseWriter) {
 		resp := call
 		json.NewEncoder(w).Encode(resp)
 	} else {
-		resp := interfaces.ErrResponse{Message: "invalid data"}
-		// resp := call
+		resp := call
 		json.NewEncoder(w).Encode(resp)
 	}
 }
@@ -71,6 +83,7 @@ func StartAPI() {
 	router.Use(helpers.PanicHandler)
 	router.HandleFunc("/login", login).Methods("POST")
 	router.HandleFunc("/register", register).Methods("POST")
+	router.HandleFunc("/transaction", transaction).Methods("POST")
 	router.HandleFunc("/user/{id}", getUser).Methods("GET")
 	fmt.Println("Starting API on port :8888")
 	log.Fatal(http.ListenAndServe(":8888", router))

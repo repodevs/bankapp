@@ -9,5 +9,6 @@ import (
 
 func main() {
 	// migrations.Migrate()
+	// migrations.MigrateTransactions()
 	api.StartAPI()
 }
