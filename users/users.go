@@ -11,27 +11,40 @@ import (
 
 // Login used for checking credential user and log in it
 func Login(username string, pass string) map[string]interface{} {
-	db := helpers.ConnectDB().Debug()
-	defer db.Close()
+	// Check if paramaters is valid
+	isValid := helpers.Validation(
+		[]interfaces.Validation{
+			{Value: username, Valid: "username"},
+			{Value: pass, Valid: "password"},
+		})
 
-	user := &interfaces.User{}
+	if isValid {
+		// Connect to DB
+		db := helpers.ConnectDB().Debug()
+		defer db.Close()
 
-	if db.Where("username = ?", username).First(&user).RecordNotFound() {
-		return map[string]interface{}{"message": "User not found"}
+		// Check user in DB
+		user := &interfaces.User{}
+		if db.Where("username = ?", username).First(&user).RecordNotFound() {
+			return map[string]interface{}{"message": "User not found"}
+		}
+
+		// Check password
+		passErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
+		if passErr == bcrypt.ErrMismatchedHashAndPassword && passErr != nil {
+			return map[string]interface{}{"message": "Wrong password"}
+		}
+
+		// Find accounts of user
+		accounts := []interfaces.ResponseAccount{}
+		db.Table("accounts").Select("id, name, balance").Where("user_id = ?", user.ID).Scan(&accounts)
+
+		var response = prepareResponse(user, accounts)
+
+		return response
 	}
 
-	passErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
-
-	if passErr == bcrypt.ErrMismatchedHashAndPassword && passErr != nil {
-		return map[string]interface{}{"message": "Wrong password"}
-	}
-
-	accounts := []interfaces.ResponseAccount{}
-	db.Table("accounts").Select("id, name, balance").Where("user_id = ?", user.ID).Scan(&accounts)
-
-	var response = prepareResponse(user, accounts)
-
-	return response
+	return map[string]interface{}{"message": "not valid values"}
 }
 
 func prepareToken(user *interfaces.User) string {

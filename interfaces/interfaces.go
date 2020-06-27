@@ -6,31 +6,36 @@ import "github.com/jinzhu/gorm"
 type User struct {
 	gorm.Model
 	Username string
-	Email string
+	Email    string
 	Password string
 }
 
 // Account struct for account
 type Account struct {
 	gorm.Model
-	Type string
-	Name string
+	Type    string
+	Name    string
 	Balance uint
-	UserID uint
+	UserID  uint
 }
 
 // ResponseAccount used for struct Response from DB
 type ResponseAccount struct {
-	ID uint
-	Name string
+	ID      uint
+	Name    string
 	Balance uint
 }
 
 // ResponseUser used for struct Response from DB
 type ResponseUser struct {
-	ID uint
+	ID       uint
 	Username string
-	Email string
+	Email    string
 	Accounts []ResponseAccount
 }
 
+// Validation used for Register data validation
+type Validation struct {
+	Value string
+	Valid string
+}
