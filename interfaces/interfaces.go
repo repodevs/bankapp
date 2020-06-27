@@ -34,7 +34,7 @@ type ResponseUser struct {
 	Accounts []ResponseAccount
 }
 
-// Validation used for Register data validation
+// Validation used for data validation
 type Validation struct {
 	Value string
 	Valid string
