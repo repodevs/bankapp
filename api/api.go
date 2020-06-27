@@ -9,31 +9,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/repodevs/bankapp/helpers"
+	"github.com/repodevs/bankapp/interfaces"
 	"github.com/repodevs/bankapp/users"
 )
-
-// Login  for
-type Login struct {
-	Username string
-	Password string
-}
-
-// Register used for struct Register
-type Register struct {
-	Username string
-	Email    string
-	Password string
-}
-
-// ErrResponse for
-type ErrResponse struct {
-	Message string
-}
 
 func login(w http.ResponseWriter, r *http.Request) {
 	body := readBody(r)
 
-	var formattedBody Login
+	var formattedBody interfaces.Login
 	err := json.Unmarshal(body, &formattedBody)
 	helpers.HandleErr(err)
 	login := users.Login(formattedBody.Username, formattedBody.Password)
@@ -44,7 +27,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 func register(w http.ResponseWriter, r *http.Request) {
 	body := readBody(r)
 
-	var formattedBody Register
+	var formattedBody interfaces.Register
 	err := json.Unmarshal(body, &formattedBody)
 	helpers.HandleErr(err)
 
@@ -66,7 +49,7 @@ func apiResponse(call map[string]interface{}, w http.ResponseWriter) {
 		resp := call
 		json.NewEncoder(w).Encode(resp)
 	} else {
-		resp := ErrResponse{Message: "invalid data"}
+		resp := interfaces.ErrResponse{Message: "invalid data"}
 		// resp := call
 		json.NewEncoder(w).Encode(resp)
 	}

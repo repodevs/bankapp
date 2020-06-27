@@ -39,3 +39,21 @@ type Validation struct {
 	Value string
 	Valid string
 }
+
+// Login  for
+type Login struct {
+	Username string
+	Password string
+}
+
+// Register used for struct Register
+type Register struct {
+	Username string
+	Email    string
+	Password string
+}
+
+// ErrResponse for
+type ErrResponse struct {
+	Message string
+}
