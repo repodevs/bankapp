@@ -72,7 +72,7 @@ func Register(username string, email string, pass string) map[string]interface{}
 
 		// Prepare response
 		accounts := []interfaces.ResponseAccount{}
-		respAccount := interfaces.ResponseAccount{ID: account.ID, Name: account.Name, Balance: uint(account.Balance)}
+		respAccount := interfaces.ResponseAccount{ID: account.ID, Name: account.Name, Balance: int(account.Balance)}
 		accounts = append(accounts, respAccount)
 		var response = prepareResponse(user, accounts, true)
 

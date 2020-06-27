@@ -23,7 +23,7 @@ type Account struct {
 type ResponseAccount struct {
 	ID      uint
 	Name    string
-	Balance uint
+	Balance int
 }
 
 // ResponseUser used for struct Response from DB
